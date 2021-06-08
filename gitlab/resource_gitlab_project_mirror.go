@@ -2,6 +2,7 @@ package gitlab
 
 import (
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -34,6 +35,23 @@ func resourceGitlabProjectMirror() *schema.Resource {
 				ForceNew:  true,
 				Required:  true,
 				Sensitive: true, // Username and password must be provided in the URL for https.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					oldURL, err := url.Parse(old)
+					if err != nil {
+						return old == new
+					}
+					newURL, err := url.Parse(new)
+					if err != nil {
+						return old == new
+					}
+					if oldURL.User != nil {
+						oldURL.User = url.UserPassword("redacted", "redacted")
+					}
+					if newURL.User != nil {
+						newURL.User = url.UserPassword("redacted", "redacted")
+					}
+					return oldURL.String() == newURL.String()
+				},
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
@@ -141,21 +159,32 @@ func resourceGitlabProjectMirrorRead(d *schema.ResourceData, meta interface{}) e
 	}
 	log.Printf("[DEBUG] read gitlab project mirror %s id %v", projectID, mirrorID)
 
-	mirrors, _, err := client.ProjectMirrors.ListProjectMirror(projectID)
-
-	if err != nil {
-		return err
-	}
-
 	var mirror *gitlab.ProjectMirror
 	found := false
 
-	for _, m := range mirrors {
-		log.Printf("[DEBUG] project mirror found %v", m.ID)
-		if m.ID == integerMirrorID {
-			mirror = m
-			found = true
+	opts := &gitlab.ListProjectMirrorOptions{
+		Page:    1,
+		PerPage: 20,
+	}
+
+	for {
+		mirrors, response, err := client.ProjectMirrors.ListProjectMirror(projectID, opts)
+		if err != nil {
+			return err
 		}
+
+		for _, m := range mirrors {
+			log.Printf("[DEBUG] project mirror found %v", m.ID)
+			if m.ID == integerMirrorID {
+				mirror = m
+				found = true
+				break
+			}
+		}
+		if response.CurrentPage >= response.TotalPages {
+			break
+		}
+		opts.Page++
 	}
 
 	if !found {

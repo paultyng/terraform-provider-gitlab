@@ -8,5 +8,5 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk v1.16.1
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/onsi/gomega v1.14.0
-	github.com/xanzy/go-gitlab v0.50.0
+	github.com/xanzy/go-gitlab v0.50.1
 )
