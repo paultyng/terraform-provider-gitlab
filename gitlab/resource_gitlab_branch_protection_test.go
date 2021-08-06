@@ -35,6 +35,8 @@ func TestAccGitlabBranchProtection_basic(t *testing.T) {
 						MergeAccessLevel: accessLevel[gitlab.DeveloperPermissions],
 					}),
 				),
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 			// Update the Branch Protection
 			{
@@ -48,6 +50,8 @@ func TestAccGitlabBranchProtection_basic(t *testing.T) {
 						MergeAccessLevel: accessLevel[gitlab.MasterPermissions],
 					}),
 				),
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 			// Update the Branch Protection to get back to initial settings
 			{
@@ -175,6 +179,8 @@ func TestAccGitlabBranchProtection_createWithCodeOwnerApproval(t *testing.T) {
 						MergeAccessLevel: accessLevel[gitlab.DeveloperPermissions],
 					}),
 				),
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
