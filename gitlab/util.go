@@ -14,11 +14,12 @@ import (
 
 var accessLevelNameToValue = map[string]gitlab.AccessLevelValue{
 	"no one":     gitlab.NoPermissions,
+	"minimal":    gitlab.MinimalAccessPermissions,
 	"guest":      gitlab.GuestPermissions,
 	"reporter":   gitlab.ReporterPermissions,
 	"developer":  gitlab.DeveloperPermissions,
 	"maintainer": gitlab.MaintainerPermissions,
-	"owner":      gitlab.OwnerPermission,
+	"owner":      gitlab.OwnerPermissions,
 
 	// Deprecated
 	"master": gitlab.MaintainerPermissions,
