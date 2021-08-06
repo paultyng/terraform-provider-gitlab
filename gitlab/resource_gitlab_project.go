@@ -754,28 +754,42 @@ func resourceGitlabProjectDelete(d *schema.ResourceData, meta interface{}) error
 
 	// Wait for the project to be deleted.
 	// Deleting a project in gitlab is async.
+	// There is also a failure mode where, after a delete, a GET project can return a 404, and then
+	// repeatedly a 200 afterward. So we must retry the DELETE and wait for a consistent response.
 	stateConf := &resource.StateChangeConf{
 		Pending: []string{"Deleting"},
 		Target:  []string{"Deleted"},
 		Refresh: func() (interface{}, string, error) {
+			// Check that the project was deleted or marked for deletion.
 			out, response, err := client.Projects.GetProject(d.Id(), nil)
+			if response != nil && response.StatusCode == http.StatusNotFound {
+				return "", "Deleted", nil
+			}
 			if err != nil {
-				if response.StatusCode == 404 {
-					return out, "Deleted", nil
-				}
-				log.Printf("[ERROR] Received error: %#v", err)
-				return out, "Error", err
+				return "", "Error", err
 			}
 			if out.MarkedForDeletionAt != nil {
 				// Represents a Gitlab EE soft-delete
-				return out, "Deleted", nil
+				return "", "Deleted", nil
 			}
-			return out, "Deleting", nil
+
+			// If it is not deleted, try deleting it again.
+			response, err = client.Projects.DeleteProject(d.Id())
+			if response != nil && response.StatusCode == http.StatusNotFound {
+				return "", "Deleted", nil
+			}
+			if err != nil {
+				return "", "Error", err
+			}
+
+			return "", "Deleting", nil
 		},
 
 		Timeout:    10 * time.Minute,
 		MinTimeout: 3 * time.Second,
 		Delay:      5 * time.Second,
+
+		ContinuousTargetOccurence: 3,
 	}
 
 	_, err = stateConf.WaitForState()
