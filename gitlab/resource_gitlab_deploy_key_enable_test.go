@@ -24,14 +24,51 @@ func TestAccGitlabDeployKeyEnable_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckGitlabDeployKeyEnableDestroy,
 		Steps: []resource.TestStep{
-			// Create a project and deployKey with default options
+			// Enable a deployKey on project with default options
 			{
 				Config: testAccGitlabDeployKeyEnableConfig(rInt, keyTitle, key),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckGitlabDeployKeyEnableExists("gitlab_deploy_key_enable.foo", &deployKey),
 					testAccCheckGitlabDeployKeyEnableAttributes(&deployKey, &testAccGitlabDeployKeyEnableExpectedAttributes{
-						Title: keyTitle,
-						Key:   key,
+						Title:   keyTitle,
+						Key:     key,
+						CanPush: false,
+					}),
+				),
+			},
+			// Define canPush to true
+			{
+				Config: testAccGitlabDeployKeyEnableConfigCanPush(rInt, keyTitle, key, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckGitlabDeployKeyEnableExists("gitlab_deploy_key_enable.foo", &deployKey),
+					testAccCheckGitlabDeployKeyEnableAttributes(&deployKey, &testAccGitlabDeployKeyEnableExpectedAttributes{
+						Title:   keyTitle,
+						Key:     key,
+						CanPush: true,
+					}),
+				),
+			},
+			// Define canPush to false
+			{
+				Config: testAccGitlabDeployKeyEnableConfigCanPush(rInt, keyTitle, key, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckGitlabDeployKeyEnableExists("gitlab_deploy_key_enable.foo", &deployKey),
+					testAccCheckGitlabDeployKeyEnableAttributes(&deployKey, &testAccGitlabDeployKeyEnableExpectedAttributes{
+						Title:   keyTitle,
+						Key:     key,
+						CanPush: false,
+					}),
+				),
+			},
+			// Get back to default options
+			{
+				Config: testAccGitlabDeployKeyEnableConfig(rInt, keyTitle, key),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckGitlabDeployKeyEnableExists("gitlab_deploy_key_enable.foo", &deployKey),
+					testAccCheckGitlabDeployKeyEnableAttributes(&deployKey, &testAccGitlabDeployKeyEnableExpectedAttributes{
+						Title:   keyTitle,
+						Key:     key,
+						CanPush: false,
 					}),
 				),
 			},
@@ -137,8 +174,8 @@ resource "gitlab_project" "foo" {
 
 resource "gitlab_deploy_key" "parent" {
   project = "${gitlab_project.parent.id}"
-	title = "%s"
-	key = "%s"
+  title = "%s"
+  key = "%s"
 }
 
 resource "gitlab_deploy_key_enable" "foo" {
@@ -146,4 +183,38 @@ resource "gitlab_deploy_key_enable" "foo" {
   key_id = "${gitlab_deploy_key.parent.id}"
 }
   `, rInt, rInt, keyTitle, key)
+}
+
+func testAccGitlabDeployKeyEnableConfigCanPush(rInt int, keyTitle string, key string, canPush bool) string {
+	return fmt.Sprintf(`
+resource "gitlab_project" "parent" {
+  name = "parent-%d"
+  description = "Terraform acceptance tests - Parent project"
+
+  # So that acceptance tests can be run in a gitlab organization
+  # with no billing
+  visibility_level = "public"
+}
+
+resource "gitlab_project" "foo" {
+  name = "foo-%d"
+  description = "Terraform acceptance tests - Test Project"
+
+  # So that acceptance tests can be run in a gitlab organization
+  # with no billing
+  visibility_level = "public"
+}
+
+resource "gitlab_deploy_key" "parent" {
+  project = "${gitlab_project.parent.id}"
+  title = "%s"
+  key = "%s"
+}
+
+resource "gitlab_deploy_key_enable" "foo" {
+  project = "${gitlab_project.foo.id}"
+  key_id = "${gitlab_deploy_key.parent.id}"
+  can_push = %t
+}
+  `, rInt, rInt, keyTitle, key, canPush)
 }

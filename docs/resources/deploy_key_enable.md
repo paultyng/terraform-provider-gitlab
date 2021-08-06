@@ -39,6 +39,8 @@ The following arguments are supported:
 
 * `key_id` - (Required, string) The Gitlab key id for the pre-existing deploy key
 
+* `can_push` - (Optional, boolean) Allow the deploy key to be used to push changes to the project. Defaults to `false`.
+
 ## Import
 
 GitLab enabled deploy keys can be imported using an id made up of `{project_id}:{deploy_key_id}`, e.g.

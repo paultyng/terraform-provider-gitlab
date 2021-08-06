@@ -43,7 +43,8 @@ func resourceGitlabDeployEnableKey() *schema.Resource {
 			"can_push": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Computed: true,
+				Default:  false,
+				ForceNew: true,
 			},
 		},
 	}
@@ -57,6 +58,14 @@ func resourceGitlabDeployKeyEnableCreate(d *schema.ResourceData, meta interface{
 	log.Printf("[DEBUG] enable gitlab deploy key %s/%d", project, key_id)
 
 	deployKey, _, err := client.DeployKeys.EnableDeployKey(project, key_id)
+	if err != nil {
+		return err
+	}
+
+	options := &gitlab.UpdateDeployKeyOptions{
+		CanPush: gitlab.Bool(d.Get("can_push").(bool)),
+	}
+	_, _, err = client.DeployKeys.UpdateDeployKey(project, key_id, options)
 	if err != nil {
 		return err
 	}
