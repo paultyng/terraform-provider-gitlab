@@ -46,6 +46,12 @@ func resourceGitlabServiceJira() *schema.Resource {
 				Required:     true,
 				ValidateFunc: validateURLFunc,
 			},
+			"api_url": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validateURLFunc,
+				Default:      "",
+			},
 			"project_key": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -128,6 +134,9 @@ func resourceGitlabServiceJiraRead(d *schema.ResourceData, meta interface{}) err
 	if v := jiraService.Properties.URL; v != "" {
 		d.Set("url", v)
 	}
+	if v := jiraService.Properties.APIURL; v != "" {
+		d.Set("api_url", v)
+	}
 	if v := jiraService.Properties.Username; v != "" {
 		d.Set("username", v)
 	}
@@ -184,6 +193,9 @@ func expandJiraOptions(d *schema.ResourceData) (*gitlab.SetJiraServiceOptions, e
 	setJiraServiceOptions.CommentOnEventEnabled = gitlab.Bool(d.Get("comment_on_event_enabled").(bool))
 
 	// Set optional properties
+	if val := d.Get("api_url"); val != nil {
+		setJiraServiceOptions.APIURL = gitlab.String(val.(string))
+	}
 	if val := d.Get("jira_issue_transition_id"); val != nil {
 		setJiraServiceOptions.JiraIssueTransitionID = gitlab.String(val.(string))
 	}

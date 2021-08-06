@@ -27,11 +27,13 @@ The following arguments are supported:
 
 * `url` - (Required) The URL to the JIRA project which is being linked to this GitLab project. For example, https://jira.example.com.
 
+* `api_url` - (Optional) The URL to the JIRA API, if different from `url`.
+
 * `username` - (Required) The username of the user created to be used with GitLab/JIRA.
 
 * `password` - (Required) The password of the user created to be used with GitLab/JIRA.
 
-* `project_key` - (Required) The short identifier for your JIRA project, all uppercase, e.g., PROJ.
+* `project_key` - (Optional) The short identifier for your JIRA project, all uppercase, e.g., PROJ.
 
 * `jira_issue_transition_id` - (Optional) The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (Administration > Issues > Workflows) by selecting View under Operations of the desired workflow of your project. By default, this ID is set to 2.
 
