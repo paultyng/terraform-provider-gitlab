@@ -44,6 +44,14 @@ func TestAccGitlabGroupMembership_basic(t *testing.T) {
 					accessLevel: fmt.Sprintf("developer"), // nolint // TODO: Resolve this golangci-lint issue: S1039: unnecessary use of fmt.Sprintf (gosimple)
 				})),
 			},
+
+			// Add the same member again
+			{
+				Config: testAccGitlabGroupMembershipConfig(rInt),
+				Check: resource.ComposeTestCheckFunc(testAccCheckGitlabGroupMembershipExists("gitlab_group_membership.foo", &groupMember), testAccCheckGitlabGroupMembershipAttributes(&groupMember, &testAccGitlabGroupMembershipExpectedAttributes{
+					accessLevel: fmt.Sprintf("developer"),
+				})),
+			},
 		},
 	})
 }

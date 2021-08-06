@@ -64,12 +64,33 @@ func resourceGitlabGroupMembershipCreate(d *schema.ResourceData, meta interface{
 	}
 	log.Printf("[DEBUG] create gitlab group groupMember for %d in %s", options.UserID, groupId)
 
-	groupMember, _, err := client.GroupMembers.AddGroupMember(groupId, options)
+	_, resp, err := client.GroupMembers.AddGroupMember(groupId, options)
 	if err != nil {
-		return err
+		user, _, err := client.Users.CurrentUser()
+		if err != nil {
+			return err
+		}
+
+		// The user that creates the group is always added automatically as member
+		if resp != nil && resp.StatusCode == http.StatusConflict && user.ID == userId {
+			options := gitlab.EditGroupMemberOptions{
+				AccessLevel: &accessLevelId,
+				ExpiresAt:   &expiresAt,
+			}
+			log.Printf("[DEBUG] update gitlab group membership %v for %s", userId, groupId)
+
+			_, _, err := client.GroupMembers.EditGroupMember(groupId, userId, &options)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
 	}
-	userIdString := strconv.Itoa(groupMember.ID)
+
+	userIdString := strconv.Itoa(userId)
 	d.SetId(buildTwoPartID(&groupId, &userIdString))
+
 	return resourceGitlabGroupMembershipRead(d, meta)
 }
 
