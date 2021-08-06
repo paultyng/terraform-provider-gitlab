@@ -48,8 +48,7 @@ func resourceGitlabServiceJira() *schema.Resource {
 			},
 			"project_key": {
 				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
+				Required: true,
 			},
 			"username": {
 				Type:     schema.TypeString,

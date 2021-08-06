@@ -28,6 +28,7 @@ func TestAccGitlabServiceJira_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(jiraResourceName, "url", "https://test.com"),
 					resource.TestCheckResourceAttr(jiraResourceName, "username", "user1"),
 					resource.TestCheckResourceAttr(jiraResourceName, "password", "mypass"),
+					resource.TestCheckResourceAttr(jiraResourceName, "project_key", "PROJ"),
 					resource.TestCheckResourceAttr(jiraResourceName, "commit_events", "true"),
 					resource.TestCheckResourceAttr(jiraResourceName, "merge_requests_events", "false"),
 					resource.TestCheckResourceAttr(jiraResourceName, "comment_on_event_enabled", "false"),
@@ -41,6 +42,7 @@ func TestAccGitlabServiceJira_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(jiraResourceName, "url", "https://testurl.com"),
 					resource.TestCheckResourceAttr(jiraResourceName, "username", "user2"),
 					resource.TestCheckResourceAttr(jiraResourceName, "password", "mypass_update"),
+					resource.TestCheckResourceAttr(jiraResourceName, "project_key", "PROJ"),
 					resource.TestCheckResourceAttr(jiraResourceName, "jira_issue_transition_id", "3"),
 					resource.TestCheckResourceAttr(jiraResourceName, "commit_events", "false"),
 					resource.TestCheckResourceAttr(jiraResourceName, "merge_requests_events", "true"),
@@ -55,6 +57,7 @@ func TestAccGitlabServiceJira_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(jiraResourceName, "url", "https://test.com"),
 					resource.TestCheckResourceAttr(jiraResourceName, "username", "user1"),
 					resource.TestCheckResourceAttr(jiraResourceName, "password", "mypass"),
+					resource.TestCheckResourceAttr(jiraResourceName, "project_key", "PROJ"),
 					resource.TestCheckResourceAttr(jiraResourceName, "commit_events", "true"),
 					resource.TestCheckResourceAttr(jiraResourceName, "merge_requests_events", "false"),
 					resource.TestCheckResourceAttr(jiraResourceName, "comment_on_event_enabled", "false"),
@@ -166,7 +169,8 @@ resource "gitlab_project" "foo" {
 resource "gitlab_service_jira" "jira" {
   project  = "${gitlab_project.foo.id}"
   url      = "https://test.com"
-  username = "user1"
+	username = "user1"
+	project_key = "PROJ"
   password = "mypass"
   commit_events = true
   merge_requests_events    = false
@@ -189,7 +193,8 @@ resource "gitlab_service_jira" "jira" {
   project  = "${gitlab_project.foo.id}"
   url      = "https://testurl.com"
   username = "user2"
-  password = "mypass_update"
+	password = "mypass_update"
+	project_key = "PROJ"
   jira_issue_transition_id = "3"
   commit_events = false
   merge_requests_events    = true
