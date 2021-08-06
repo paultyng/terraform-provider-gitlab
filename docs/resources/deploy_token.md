@@ -1,6 +1,6 @@
 # gitlab\_deploy\_token
 
-This resource allows you to create and manage deploy token for your GitLab projects and groups.
+This resource allows you to create and manage deploy token for your GitLab projects and groups. Please refer to [Gitlab documentation](https://docs.gitlab.com/ee/user/project/deploy_tokens/) for further information.
 
 ## Example Usage - Project
 
@@ -13,6 +13,12 @@ resource "gitlab_deploy_token" "example" {
   
   scopes = [ "read_repository", "read_registry" ]
 }
+
+resource "gitlab_deploy_token" "example-two" {
+  project    = "12345678"
+  name       = "Example deploy token expires in 24h"
+  expires_at = timeadd(timestamp(), "24h")
+}
 ```
 
 ## Example Usage - Group
@@ -21,7 +27,7 @@ resource "gitlab_deploy_token" "example" {
 resource "gitlab_deploy_token" "example" {
   group      = "example/deploying"
   name       = "Example group deploy token"
-  
+
   scopes = [ "read_repository" ]
 }
 ```

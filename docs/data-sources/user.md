@@ -1,12 +1,22 @@
 # gitlab\_user
 
-Provides details about a specific user in the gitlab provider. Especially the ability to lookup the id for linking to other resources.
+Provide details about a specific user in the gitlab provider. Especially the ability to lookup the id for linking to other resources.
 
 ## Example Usage
 
 ```hcl
 data "gitlab_user" "example" {
   username = "myuser"
+}
+```
+
+### Example using `for_each`
+
+```hcl
+data "gitlab_user" "example-two" {
+  for_each = toset(["user1", "user2", "user3"])
+
+  username = each.value
 }
 ```
 
@@ -20,7 +30,7 @@ The following arguments are supported:
 
 * `user_id` - (Optional) The ID of the user.
 
-**Note**: only one of email, user_id or username must be provided.
+-> Only one of email, user_id, or username must be provided.
 
 ## Attributes Reference
 
@@ -52,7 +62,7 @@ The following arguments are supported:
 
 * `organization` - The organization of the user.
 
-* `two_factor_enabled` - Whether user's two factor auth is enabled.
+* `two_factor_enabled` - Whether user's two-factor auth is enabled.
 
 * `avatar_url` - The avatar URL of the user.
 
@@ -62,7 +72,7 @@ The following arguments are supported:
 
 * `skype` - Skype username of the user.
 
-* `linkedin` - Linkedin profile of the user.
+* `linkedin` - LinkedIn profile of the user.
 
 * `twitter` - Twitter username of the user.
 
@@ -76,6 +86,4 @@ The following arguments are supported:
 
 * `current_sign_in_at` - Current user's sign-in date.
 
-**Note**: some attributes might not be returned depending on if you're an admin or not. Please refer to [doc][doc] for more details.
-
-[doc]: https://docs.gitlab.com/ce/api/users.html#single-user
+-> Some attributes might not be returned depending on if you're an admin or not. Please refer to [Gitlab documentation](https://docs.gitlab.com/ce/api/users.html#single-user) for more details.

@@ -3,7 +3,7 @@
 This resource allows you to create and manage GitLab users.
 Note your provider will need to be configured with admin-level access for this resource to work.
 
--> **Note:** You must specify either `password` or `reset_password`.
+-> You must specify either `password` or `reset_password`.
 
 ## Example Usage
 
@@ -33,7 +33,7 @@ The following arguments are supported:
 
 * `password` - (Optional) The password of the user.
 
-* `is_admin` - (Optional) Boolean, defaults to false.  Whether to enable administrative priviledges
+* `is_admin` - (Optional) Boolean, defaults to false.  Whether to enable administrative privileges
 for the user.
 
 * `projects_limit` - (Optional) Integer, defaults to 0.  Number of projects user can create.
