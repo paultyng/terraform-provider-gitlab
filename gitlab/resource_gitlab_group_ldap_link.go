@@ -66,7 +66,7 @@ func resourceGitlabGroupLdapLinkCreate(d *schema.ResourceData, meta interface{})
 
 	options := &gitlab.AddGroupLDAPLinkOptions{
 		CN:          &cn,
-		GroupAccess: &group_access,
+		GroupAccess: gitlab.AccessLevel(gitlab.AccessLevelValue(group_access)),
 		Provider:    &ldap_provider,
 	}
 
