@@ -177,9 +177,9 @@ func resourceGitlabDeployTokenRead(d *schema.ResourceData, meta interface{}) err
 					d.Set("scopes.read_registry", true)
 				}
 
-                                if scope == "read_package_registry" {
-                                        d.Set("scopes.read_package_registry", true)
-                                }
+				if scope == "read_package_registry" {
+					d.Set("scopes.read_package_registry", true)
+				}
 			}
 		}
 	}
