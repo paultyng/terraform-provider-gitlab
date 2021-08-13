@@ -56,7 +56,7 @@ func resourceGitlabDeployToken() *schema.Resource {
 				ForceNew: true,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
-					ValidateFunc: validation.StringInSlice([]string{"read_registry", "read_repository"}, false),
+					ValidateFunc: validation.StringInSlice([]string{"read_registry", "read_repository", "read_package_registry"}, false),
 				},
 			},
 
@@ -176,6 +176,10 @@ func resourceGitlabDeployTokenRead(d *schema.ResourceData, meta interface{}) err
 				if scope == "read_registry" {
 					d.Set("scopes.read_registry", true)
 				}
+
+                                if scope == "read_package_registry" {
+                                        d.Set("scopes.read_package_registry", true)
+                                }
 			}
 		}
 	}
