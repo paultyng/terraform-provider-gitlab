@@ -65,6 +65,39 @@ func TestAccGitlabProjectMirror_basic(t *testing.T) {
 	})
 }
 
+func TestAccGitlabProjectMirror_withPassword(t *testing.T) {
+	//var mirror gitlab.ProjectMirror
+	rInt := acctest.RandInt()
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckGitlabProjectMirrorDestroy,
+		Steps: []resource.TestStep{
+			// Create a project and mirror with a username / password.
+			{
+				Config: testAccGitlabProjectMirrorConfigWithPassword(rInt),
+			},
+		},
+	})
+}
+
+func TestAccGitlabProjectMirror_withCount(t *testing.T) {
+	//var mirror gitlab.ProjectMirror
+	rInt := acctest.RandInt()
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckGitlabProjectMirrorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccGitlabProjectMirrorConfigWithCount(rInt),
+			},
+		},
+	})
+}
+
 // lintignore: AT002 // TODO: Resolve this tfproviderlint issue
 func TestAccGitlabProjectMirror_import(t *testing.T) {
 	rInt := acctest.RandInt()
@@ -186,6 +219,43 @@ resource "gitlab_project_mirror" "foo" {
   url = "https://example.com/hook-%d"
 }
 	`, rInt, rInt)
+}
+
+func testAccGitlabProjectMirrorConfigWithCount(rInt int) string {
+	return fmt.Sprintf(`
+resource "gitlab_project" "foo" {
+  name = "foo-%d"
+  description = "Terraform acceptance tests"
+
+  # So that acceptance tests can be run in a gitlab organization
+  # with no billing
+  visibility_level = "public"
+}
+
+resource "gitlab_project_mirror" "foo" {
+  project = "${gitlab_project.foo.id}"
+  url = "https://foo:%d@example.com/mirror-%d"
+  count = 40
+}
+	`, rInt, rInt, rInt)
+}
+
+func testAccGitlabProjectMirrorConfigWithPassword(rInt int) string {
+	return fmt.Sprintf(`
+resource "gitlab_project" "foo" {
+  name = "foo-%d"
+  description = "Terraform acceptance tests"
+
+  # So that acceptance tests can be run in a gitlab organization
+  # with no billing
+  visibility_level = "public"
+}
+
+resource "gitlab_project_mirror" "foo" {
+  project = "${gitlab_project.foo.id}"
+  url = "https://foo:%d@example.com/mirror-%d"
+}
+	`, rInt, rInt, rInt)
 }
 
 func testAccGitlabProjectMirrorUpdateConfig(rInt int) string {

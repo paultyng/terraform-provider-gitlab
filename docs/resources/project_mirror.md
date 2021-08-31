@@ -25,6 +25,10 @@ The following arguments are supported:
 
 * `url` - (Required) The URL of the remote repository to be mirrored.
 
+~> Due to limitations of the GitLab API, the provider cannot update the
+username and passwords that are present in the URL. To change the username or
+the password, we recommend you to [replace](https://www.terraform.io/docs/cli/commands/plan.html#replace-address) the resources.
+
 * `enabled` - Determines if the mirror is enabled.
 
 * `only_protected_branches` - Determines if only protected branches are mirrored.
