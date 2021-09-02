@@ -55,6 +55,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
+			"gitlab_branch":           dataSourceGitlabBranch(),
 			"gitlab_group":            dataSourceGitlabGroup(),
 			"gitlab_group_membership": dataSourceGitlabGroupMembership(),
 			"gitlab_project":          dataSourceGitlabProject(),
@@ -64,6 +65,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"gitlab_branch":                     resourceGitlabBranch(),
 			"gitlab_branch_protection":          resourceGitlabBranchProtection(),
 			"gitlab_tag_protection":             resourceGitlabTagProtection(),
 			"gitlab_group":                      resourceGitlabGroup(),
