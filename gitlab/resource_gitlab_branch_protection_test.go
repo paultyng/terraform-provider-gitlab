@@ -355,7 +355,7 @@ func testAccCheckGitlabBranchProtectionAttributes(pb *gitlab.ProtectedBranch, wa
 		}
 		remainingWantedGroupIDsAllowedToPush := map[int]struct{}{}
 		for _, v := range want.GroupsAllowedToPush {
-			group, _, err := conn.Groups.GetGroup(v)
+			group, _, err := conn.Groups.GetGroup(v, nil)
 			if err != nil {
 				return fmt.Errorf("error looking up group by path %v: %v", v, err)
 			}

@@ -81,6 +81,11 @@ The resource exports the following attributes:
 
 * `runners_token` - The group level registration token to use during runner setup.
 
+* `default_branch_protection` - (Optional) Int, defaults to 2.
+Whether developers and maintainers can push to the applicable default branch.
+0 no protection, 1 partial protection, 2 full protection
+https://docs.gitlab.com/ee/api/groups.html#options-for-default_branch_protection
+
 ## Import
 
 You can import a group state using `terraform import <resource> <id>`.  The

@@ -69,6 +69,10 @@ func dataSourceGitlabGroup() *schema.Resource {
 				Computed:  true,
 				Sensitive: true,
 			},
+			"default_branch_protection": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -86,13 +90,13 @@ func dataSourceGitlabGroupRead(d *schema.ResourceData, meta interface{}) error {
 
 	if groupIDOk {
 		// Get group by id
-		group, _, err = client.Groups.GetGroup(groupIDData.(int))
+		group, _, err = client.Groups.GetGroup(groupIDData.(int), nil)
 		if err != nil {
 			return err
 		}
 	} else if fullPathOk {
 		// Get group by full path
-		group, _, err = client.Groups.GetGroup(fullPathData.(string))
+		group, _, err = client.Groups.GetGroup(fullPathData.(string), nil)
 		if err != nil {
 			return err
 		}
@@ -112,6 +116,7 @@ func dataSourceGitlabGroupRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("visibility_level", group.Visibility)
 	d.Set("parent_id", group.ParentID)
 	d.Set("runners_token", group.RunnersToken)
+	d.Set("default_branch_protection", group.DefaultBranchProtection)
 
 	d.SetId(fmt.Sprintf("%d", group.ID))
 

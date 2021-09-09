@@ -47,7 +47,7 @@ func testAccCheckGitlabProjectSharedWithGroup(projectName, groupName string, acc
 			return err
 		}
 
-		group, _, err := client.Groups.GetGroup(groupName)
+		group, _, err := client.Groups.GetGroup(groupName, nil)
 		if err != nil {
 			return err
 		}

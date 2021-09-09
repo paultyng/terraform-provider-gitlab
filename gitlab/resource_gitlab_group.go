@@ -53,6 +53,12 @@ func resourceGitlabGroup() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"default_branch_protection": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Default:      2,
+				ValidateFunc: validation.IntInSlice([]int{0, 1, 2}),
+			},
 			"request_access_enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -177,6 +183,10 @@ func resourceGitlabGroupCreate(d *schema.ResourceData, meta interface{}) error {
 		options.ParentID = gitlab.Int(v.(int))
 	}
 
+	if v, ok := d.GetOk("default_branch_protection"); ok {
+		options.DefaultBranchProtection = gitlab.Int(v.(int))
+	}
+
 	log.Printf("[DEBUG] create gitlab group %q", *options.Name)
 
 	group, _, err := client.Groups.CreateGroup(options)
@@ -193,7 +203,7 @@ func resourceGitlabGroupRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*gitlab.Client)
 	log.Printf("[DEBUG] read gitlab group %s", d.Id())
 
-	group, resp, err := client.Groups.GetGroup(d.Id())
+	group, resp, err := client.Groups.GetGroup(d.Id(), nil)
 	if err != nil {
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			log.Printf("[DEBUG] gitlab group %s not found so removing from state", d.Id())
@@ -228,6 +238,7 @@ func resourceGitlabGroupRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("parent_id", group.ParentID)
 	d.Set("runners_token", group.RunnersToken)
 	d.Set("share_with_group_lock", group.ShareWithGroupLock)
+	d.Set("default_branch_protection", group.DefaultBranchProtection)
 
 	return nil
 }
@@ -295,6 +306,10 @@ func resourceGitlabGroupUpdate(d *schema.ResourceData, meta interface{}) error {
 		options.ShareWithGroupLock = gitlab.Bool(d.Get("share_with_group_lock").(bool))
 	}
 
+	if d.HasChange("default_branch_protection") {
+		options.DefaultBranchProtection = gitlab.Int(d.Get("default_branch_protection").(int))
+	}
+
 	log.Printf("[DEBUG] update gitlab group %s", d.Id())
 
 	_, _, err := client.Groups.UpdateGroup(d.Id(), options)
@@ -320,7 +335,7 @@ func resourceGitlabGroupDelete(d *schema.ResourceData, meta interface{}) error {
 		Pending: []string{"Deleting"},
 		Target:  []string{"Deleted"},
 		Refresh: func() (interface{}, string, error) {
-			out, response, err := client.Groups.GetGroup(d.Id())
+			out, response, err := client.Groups.GetGroup(d.Id(), nil)
 			if err != nil {
 				if response != nil && response.StatusCode == 404 {
 					return out, "Deleted", nil

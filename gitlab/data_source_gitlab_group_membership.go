@@ -98,13 +98,13 @@ func dataSourceGitlabGroupMembershipRead(d *schema.ResourceData, meta interface{
 
 	if groupIDOk {
 		// Get group by id
-		group, _, err = client.Groups.GetGroup(groupIDData.(int))
+		group, _, err = client.Groups.GetGroup(groupIDData.(int), nil)
 		if err != nil {
 			return err
 		}
 	} else if fullPathOk {
 		// Get group by full path
-		group, _, err = client.Groups.GetGroup(fullPathData.(string))
+		group, _, err = client.Groups.GetGroup(fullPathData.(string), nil)
 		if err != nil {
 			return err
 		}

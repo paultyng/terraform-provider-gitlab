@@ -58,4 +58,6 @@ The resource exports the following attributes:
 
 * `runners_token` - The group level registration token to use during runner setup.
 
+* `default_branch_protection` - Whether developers and maintainers can push to the applicable default branch.
+
 [doc]: https://docs.gitlab.com/ee/api/groups.html#details-of-a-group

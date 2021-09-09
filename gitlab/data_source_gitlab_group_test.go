@@ -55,6 +55,7 @@ func testAccDataSourceGitlabGroup(src, n string) resource.TestCheckFunc {
 			"request_access_enabled",
 			"visibility_level",
 			"parent_id",
+			"default_branch_protection",
 		}
 
 		for _, attribute := range testAttributes {

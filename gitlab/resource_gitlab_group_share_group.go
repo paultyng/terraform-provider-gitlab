@@ -87,7 +87,7 @@ func resourceGitlabGroupShareGroupRead(d *schema.ResourceData, meta interface{})
 	}
 
 	// Query main group
-	group, resp, err := client.Groups.GetGroup(groupId)
+	group, resp, err := client.Groups.GetGroup(groupId, nil)
 	if err != nil {
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			log.Printf("[DEBUG] gitlab group %s not found so removing from state", groupId)

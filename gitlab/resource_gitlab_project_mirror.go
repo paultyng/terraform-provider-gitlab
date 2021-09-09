@@ -141,7 +141,7 @@ func resourceGitlabProjectMirrorRead(d *schema.ResourceData, meta interface{}) e
 	}
 	log.Printf("[DEBUG] read gitlab project mirror %s id %v", projectID, mirrorID)
 
-	mirrors, _, err := client.ProjectMirrors.ListProjectMirror(projectID)
+	mirrors, _, err := client.ProjectMirrors.ListProjectMirror(projectID, nil)
 
 	if err != nil {
 		return err

@@ -81,7 +81,7 @@ func testAccCheckGitlabGroupSharedWithGroup(
 	return func(_ *terraform.State) error {
 		client := testAccProvider.Meta().(*gitlab.Client)
 
-		mainGroup, _, err := client.Groups.GetGroup(fmt.Sprintf("%s_main", groupName))
+		mainGroup, _, err := client.Groups.GetGroup(fmt.Sprintf("%s_main", groupName), nil)
 		if err != nil {
 			return err
 		}
@@ -115,7 +115,7 @@ func testAccCheckGitlabGroupIsNotShared(groupName string) resource.TestCheckFunc
 	return func(_ *terraform.State) error {
 		client := testAccProvider.Meta().(*gitlab.Client)
 
-		mainGroup, _, err := client.Groups.GetGroup(fmt.Sprintf("%s_main", groupName))
+		mainGroup, _, err := client.Groups.GetGroup(fmt.Sprintf("%s_main", groupName), nil)
 		if err != nil {
 			return err
 		}

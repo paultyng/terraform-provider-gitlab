@@ -138,7 +138,7 @@ func resourceGitlabGroupLabelImporter(d *schema.ResourceData, meta interface{}) 
 	}
 
 	d.SetId(parts[1])
-	group, _, err := client.Groups.GetGroup(parts[0])
+	group, _, err := client.Groups.GetGroup(parts[0], nil)
 	if err != nil {
 		return nil, err
 	}
