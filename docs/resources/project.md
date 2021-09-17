@@ -89,6 +89,9 @@ consult the [gitlab documentation](https://docs.gitlab.com/ee/user/project/repos
 
 * `initialize_with_readme` - (Optional) Create main branch with first commit containing a README.md file.
 
+* `squash_option` - (Optional) Squash commits when merge request.
+   Valid values are `never`, `always`, `default_on`, or `default_off`
+
 * `packages_enabled` - (Optional) Enable packages repository for the project.
 
 * `push_rules` (Optional) Push rules for the project (documented below).

@@ -44,6 +44,7 @@ func TestAccGitlabProject_basic(t *testing.T) {
 		MergeMethod:                      gitlab.FastForwardMerge,
 		OnlyAllowMergeIfPipelineSucceeds: true,
 		OnlyAllowMergeIfAllDiscussionsAreResolved: true,
+		SquashOption:		"always",
 		Archived:           false, // needless, but let's make this explicit
 		PackagesEnabled:    true,
 		PagesAccessLevel:   gitlab.PublicAccessControl,
@@ -88,6 +89,7 @@ func TestAccGitlabProject_basic(t *testing.T) {
 						MergeMethod:                      gitlab.FastForwardMerge,
 						OnlyAllowMergeIfPipelineSucceeds: true,
 						OnlyAllowMergeIfAllDiscussionsAreResolved: true,
+						SquashOption: 		"always",
 						Archived:           true,
 						PackagesEnabled:    false,
 						PagesAccessLevel:   gitlab.DisabledAccessControl,
@@ -997,6 +999,7 @@ resource "gitlab_project" "foo" {
   merge_method = "ff"
   only_allow_merge_if_pipeline_succeeds = true
   only_allow_merge_if_all_discussions_are_resolved = true
+  squash_option = "always"
   pages_access_level = "public"
   build_coverage_regex = "foo"
   ci_config_path = ".gitlab-ci.yml@mynamespace/myproject"
@@ -1053,6 +1056,7 @@ resource "gitlab_project" "foo" {
   merge_method = "ff"
   only_allow_merge_if_pipeline_succeeds = true
   only_allow_merge_if_all_discussions_are_resolved = true
+  squash_option = "always"
 
   request_access_enabled = false
   issues_enabled = false
