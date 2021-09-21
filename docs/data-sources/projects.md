@@ -2,7 +2,7 @@
 
 Provide details about a list of projects in the Gitlab provider. Listing all projects and group projects with [project filtering](https://docs.gitlab.com/ee/api/projects.html#list-user-projects) or [group project filtering](https://docs.gitlab.com/ee/api/groups.html#list-a-groups-projects) is supported.
 
-> **NOTE**: This data source supports all available filters exposed by the `xanzy/go-gitlab` package, which might not expose all available filters exposed by the Gitlab APIs.  
+> **NOTE**: This data source supports all available filters exposed by the `xanzy/go-gitlab` package, which might not expose all available filters exposed by the Gitlab APIs.
 
 ## Example Usage
 
@@ -161,6 +161,8 @@ Projects items have the following fields:
 * `only_allow_merge_if_pipeline_succeeds`
 
 * `only_allow_merge_if_all_discussions_are_resolved`
+
+* `allow_merge_on_skipped_pipeline`
 
 * `lfs_enabled`
 

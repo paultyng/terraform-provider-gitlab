@@ -118,6 +118,11 @@ var resourceGitLabProjectSchema = map[string]*schema.Schema{
 		Optional: true,
 		Default:  false,
 	},
+	"allow_merge_on_skipped_pipeline": {
+		Type:     schema.TypeBool,
+		Optional: true,
+		Default:  false,
+	},
 	"ssh_url_to_repo": {
 		Type:     schema.TypeString,
 		Computed: true,
@@ -316,6 +321,7 @@ func resourceGitlabProjectSetToState(d *schema.ResourceData, project *gitlab.Pro
 	d.Set("merge_method", string(project.MergeMethod))
 	d.Set("only_allow_merge_if_pipeline_succeeds", project.OnlyAllowMergeIfPipelineSucceeds)
 	d.Set("only_allow_merge_if_all_discussions_are_resolved", project.OnlyAllowMergeIfAllDiscussionsAreResolved)
+	d.Set("allow_merge_on_skipped_pipeline", project.AllowMergeOnSkippedPipeline)
 	d.Set("namespace_id", project.Namespace.ID)
 	d.Set("ssh_url_to_repo", project.SSHURLToRepo)
 	d.Set("http_url_to_repo", project.HTTPURLToRepo)
@@ -356,6 +362,7 @@ func resourceGitlabProjectCreate(d *schema.ResourceData, meta interface{}) error
 		MergeMethod:                      stringToMergeMethod(d.Get("merge_method").(string)),
 		OnlyAllowMergeIfPipelineSucceeds: gitlab.Bool(d.Get("only_allow_merge_if_pipeline_succeeds").(bool)),
 		OnlyAllowMergeIfAllDiscussionsAreResolved: gitlab.Bool(d.Get("only_allow_merge_if_all_discussions_are_resolved").(bool)),
+		AllowMergeOnSkippedPipeline:               gitlab.Bool(d.Get("allow_merge_on_skipped_pipeline").(bool)),
 		SharedRunnersEnabled:                      gitlab.Bool(d.Get("shared_runners_enabled").(bool)),
 		RemoveSourceBranchAfterMerge:              gitlab.Bool(d.Get("remove_source_branch_after_merge").(bool)),
 		PackagesEnabled:                           gitlab.Bool(d.Get("packages_enabled").(bool)),
@@ -614,6 +621,10 @@ func resourceGitlabProjectUpdate(d *schema.ResourceData, meta interface{}) error
 
 	if d.HasChange("only_allow_merge_if_all_discussions_are_resolved") {
 		options.OnlyAllowMergeIfAllDiscussionsAreResolved = gitlab.Bool(d.Get("only_allow_merge_if_all_discussions_are_resolved").(bool))
+	}
+
+	if d.HasChange("allow_merge_on_skipped_pipeline") {
+		options.AllowMergeOnSkippedPipeline = gitlab.Bool(d.Get("allow_merge_on_skipped_pipeline").(bool))
 	}
 
 	if d.HasChange("request_access_enabled") {

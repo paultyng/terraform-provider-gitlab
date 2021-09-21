@@ -83,6 +83,8 @@ consult the [gitlab documentation](https://docs.gitlab.com/ee/user/project/repos
 
 * `only_allow_merge_if_all_discussions_are_resolved` - (Optional) Set to true if you want allow merges only if all discussions are resolved.
 
+* `allow_merge_on_skipped_pipeline` - (Optional) Set to true if you want to treat skipped pipelines as if they finished with success.
+
 * `shared_runners_enabled` - (Optional) Enable shared runners for this project.
 
 * `archived` - (Optional) Whether the project is in read-only mode (archived). Repositories can be archived/unarchived by toggling this parameter.

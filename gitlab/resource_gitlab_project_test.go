@@ -44,11 +44,12 @@ func TestAccGitlabProject_basic(t *testing.T) {
 		MergeMethod:                      gitlab.FastForwardMerge,
 		OnlyAllowMergeIfPipelineSucceeds: true,
 		OnlyAllowMergeIfAllDiscussionsAreResolved: true,
-		Archived:           false, // needless, but let's make this explicit
-		PackagesEnabled:    true,
-		PagesAccessLevel:   gitlab.PublicAccessControl,
-		BuildCoverageRegex: "foo",
-		CIConfigPath:       ".gitlab-ci.yml@mynamespace/myproject",
+		AllowMergeOnSkippedPipeline:               false,
+		Archived:                                  false, // needless, but let's make this explicit
+		PackagesEnabled:                           true,
+		PagesAccessLevel:                          gitlab.PublicAccessControl,
+		BuildCoverageRegex:                        "foo",
+		CIConfigPath:                              ".gitlab-ci.yml@mynamespace/myproject",
 	}
 
 	defaultsMainBranch = defaults
@@ -88,10 +89,11 @@ func TestAccGitlabProject_basic(t *testing.T) {
 						MergeMethod:                      gitlab.FastForwardMerge,
 						OnlyAllowMergeIfPipelineSucceeds: true,
 						OnlyAllowMergeIfAllDiscussionsAreResolved: true,
-						Archived:           true,
-						PackagesEnabled:    false,
-						PagesAccessLevel:   gitlab.DisabledAccessControl,
-						BuildCoverageRegex: "bar",
+						AllowMergeOnSkippedPipeline:               false,
+						Archived:                                  true,
+						PackagesEnabled:                           false,
+						PagesAccessLevel:                          gitlab.DisabledAccessControl,
+						BuildCoverageRegex:                        "bar",
 					}, &received),
 				),
 			},
@@ -1053,6 +1055,7 @@ resource "gitlab_project" "foo" {
   merge_method = "ff"
   only_allow_merge_if_pipeline_succeeds = true
   only_allow_merge_if_all_discussions_are_resolved = true
+  allow_merge_on_skipped_pipeline = false
 
   request_access_enabled = false
   issues_enabled = false
